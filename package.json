@@ -1,0 +1,23 @@
+{
+  "name": "LiriNodeApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "liri.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmpwhite/LiriNodeApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wmpwhite/LiriNodeApp/issues"
+  },
+  "homepage": "https://github.com/wmpwhite/LiriNodeApp#readme",
+  "dependencies": {
+    "request": "^2.85.0"
+  }
+}
