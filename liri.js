@@ -1,46 +1,22 @@
 // Node.js for Liri Homework
 
-// require("./dotenv").config();
-// var fs = require("fs");
-
-
-
-// fs.readFile("keys.js", "utf8", function(err, data) {
-//     if (err) {
-//       return console.log(err);
-//     }
-  
-//     // Break the string down by comma separation and store the contents into the output array.
-//     var output = data.split(",");
-  
-//     // Loop Through the newly created output array
-//     for (var i = 0; i < output.length; i++) {
-  
-//       // Print each element (item) of the array/
-//       console.log(output[i]);
-//     }
-//   });
-
-
-
+require("dotenv").config();
+var fs = require("fs");
+var Spotify = require("node-spotify-api");
+var Twitter = require('twitter');
 var keys = require("./keys.js");
-
 console.log(keys);
+
+
 
 var action = process.argv[2];
 console.log("action: " + action);
-
-for (var i = 3; i < process.argv.length; i++) {
-    console.log(process.argv[i]);
-};  
-
-
 
 
 switch (action) {
     case "my-tweets":
       console.log("option 1")
-      doTwitter();
+      doTweets();
       break;
     case "spotify-this-song":
     console.log("option 2")
@@ -52,12 +28,72 @@ switch (action) {
       break;
     case "do-what-it-says":
       console.log("option 4")
-      doSpotify();
+      doWhat();
       break;
     default:
       console.log("default branch")
       break;
 }
+
+function doTweets() {
+    var client = new Twitter({
+        consumer_key: keys.twitter.consumer_key,
+        consumer_secret: keys.twitter.consumer_secret,
+        access_token_key: keys.twitter.access_token_key,
+        access_token_secret: keys.twitter.access_token_secret
+    });
+
+    console.log(client);
+
+    client.get('statuses/show/987145663493427200', function(error, tweets, response) {
+        if(error) throw error;
+        console.log(JSON.stringify(tweets));   
+        console.log(JSON.stringify(response));  
+      });
+}
+
+
+
+
+function doSpotify() { 
+    var songVar = "";
+    if (process.argv[3]) {
+        for (var i = 3; i < process.argv.length; i++) {
+            if (i === (process.argv.length - 1)) {
+                songVar = songVar + process.argv[i];
+            }
+            else
+                songVar = songVar + process.argv[i] + " " ;            
+        }
+    }    
+    else {
+        songVar = "The Sign";            
+    };
+
+    console.log(songVar);
+
+    var spotify = new Spotify({
+        id: keys.spotify.id,
+        secret: keys.spotify.secret
+    });
+    
+    spotify.search({ type: 'track', query: songVar, limit: "1" }, function(err, data) {
+    if (err) {
+        return console.log('Error occurred: ' + err);
+    }
+    var trackInfo = data;
+    console.log("track information" + trackInfo);
+
+    // console.log(trackInfo.items.album.name);
+    // console.log(trackInfo.items.artists.name);
+    
+    console.log(JSON.stringify(data)); 
+    });
+}
+
+
+
+
 
 function doOmdb() {
     var movieVar = "";
@@ -90,6 +126,19 @@ function doOmdb() {
 
             console.log(JSON.parse(body));
             
+        }
+    })
+};
+
+function doWhat() {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log(data);
+        var dataArr = data.split(",");
+        for (var i = 0; i < dataArr.length; i++) {
+            console.log(dataArr[i]);
         }
     })
 };
